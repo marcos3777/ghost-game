@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>2D Ghost Maze Game</title>
     <link rel="stylesheet" href="./src/css/style.css">
     <style>
@@ -13,12 +15,14 @@
             background-color: #000;
             color: #ccc;
             font-family: Arial, sans-serif;
+            touch-action: none;
         }
         
         #game-container {
             position: relative;
             width: 100vw;
             height: 100vh;
+            overflow: hidden;
         }
         
         #ui-container {
@@ -89,6 +93,11 @@
             max-width: 300px;
             border: 1px solid #555;
         }
+
+        /* Prevenção de highlight ao tocar em elementos */
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
     </style>
 </head>
 <body>
@@ -123,10 +132,10 @@
         
         <!-- Touch controls for mobile devices -->
         <div id="touch-controls">
-            <div id="up-button" class="touch-button">↑</div>
-            <div id="left-button" class="touch-button">←</div>
-            <div id="right-button" class="touch-button">→</div>
-            <div id="down-button" class="touch-button">↓</div>
+            <div id="up-button" class="touch-button" aria-label="Move up">↑</div>
+            <div id="left-button" class="touch-button" aria-label="Move left">←</div>
+            <div id="right-button" class="touch-button" aria-label="Move right">→</div>
+            <div id="down-button" class="touch-button" aria-label="Move down">↓</div>
         </div>
     </div>
     <div id="mobile-controls" style="display: none;">

@@ -20,6 +20,10 @@ export class InputHandler {
         this.onKeyUp = this.onKeyUp.bind(this);
         this.onTouchStart = this.onTouchStart.bind(this);
         this.onTouchEnd = this.onTouchEnd.bind(this);
+        this.onTouchMove = this.onTouchMove.bind(this);
+        
+        // Detect if this is a touch device
+        this.isTouchDevice = this.detectTouchDevice();
         
         // Add keyboard event listeners
         window.addEventListener('keydown', this.onKeyDown);
@@ -27,6 +31,16 @@ export class InputHandler {
         
         // Set up touch controls for mobile
         this.setupTouchControls();
+    }
+    
+    /**
+     * Detects if the device has touch capabilities
+     * @returns {boolean} - True if touch is available
+     */
+    detectTouchDevice() {
+        return ('ontouchstart' in window) || 
+               (navigator.maxTouchPoints > 0) || 
+               (navigator.msMaxTouchPoints > 0);
     }
     
     /**
@@ -39,9 +53,12 @@ export class InputHandler {
         this.leftButton = document.getElementById('left-button');
         this.rightButton = document.getElementById('right-button');
         
+        // Get touch controls container
+        this.touchControls = document.getElementById('touch-controls');
+        
         // Check if touch elements exist
         if (this.upButton && this.downButton && this.leftButton && this.rightButton) {
-            // Add touch event listeners
+            // Add touch event listeners with passive option for better performance
             this.upButton.addEventListener('touchstart', () => this.onTouchStart('up'), { passive: true });
             this.upButton.addEventListener('touchend', () => this.onTouchEnd('up'), { passive: true });
             
@@ -53,6 +70,41 @@ export class InputHandler {
             
             this.rightButton.addEventListener('touchstart', () => this.onTouchStart('right'), { passive: true });
             this.rightButton.addEventListener('touchend', () => this.onTouchEnd('right'), { passive: true });
+            
+            // Prevent buttons from blocking touch events
+            this.touchControls.addEventListener('touchmove', this.onTouchMove, { passive: false });
+            
+            // If touch device is detected, make sure controls are visible
+            if (this.isTouchDevice) {
+                this.touchControls.style.display = 'grid';
+                
+                // Add instruction for touch controls
+                const instructions = document.getElementById('instructions');
+                if (instructions) {
+                    const touchInstructions = document.createElement('p');
+                    touchInstructions.textContent = 'Use the touch controls to move.';
+                    instructions.appendChild(touchInstructions);
+                }
+                
+                // Add viewport lock to prevent scaling/zooming
+                document.addEventListener('touchmove', function(e) {
+                    if (e.scale !== 1 && e.touches.length > 1) {
+                        e.preventDefault();
+                    }
+                }, { passive: false });
+            }
+        }
+    }
+    
+    /**
+     * Handles touch move events on the control buttons
+     * @param {TouchEvent} event - The touch event
+     */
+    onTouchMove(event) {
+        // Prevent default only if the touch started on our controls
+        // This allows scrolling in other parts of the page
+        if (event.target.classList.contains('touch-button')) {
+            event.preventDefault();
         }
     }
     
@@ -232,6 +284,10 @@ export class InputHandler {
             
             this.rightButton.removeEventListener('touchstart', () => this.onTouchStart('right'));
             this.rightButton.removeEventListener('touchend', () => this.onTouchEnd('right'));
+            
+            if (this.touchControls) {
+                this.touchControls.removeEventListener('touchmove', this.onTouchMove);
+            }
         }
     }
 } 

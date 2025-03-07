@@ -1,5 +1,13 @@
 /* Ghost Maze Game Styles */
 
+/* Otimizações de desempenho */
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    box-sizing: border-box;
+}
+
 /* Animations */
 @keyframes pulse {
     0% { opacity: 1; }
@@ -27,13 +35,15 @@
     100% { background-color: rgba(100, 100, 100, 0); }
 }
 
-/* Effect Classes */
+/* Effect Classes - com otimizações de hardware */
 .screen-shake {
     animation: shake 0.5s;
+    will-change: transform;
 }
 
 .screen-flash {
     animation: flash 0.3s;
+    will-change: background-color;
 }
 
 /* Mobile Responsiveness */
@@ -58,11 +68,64 @@
     
     #game-over, #level-complete {
         padding: 15px;
+        width: 80%;
+        max-width: 300px;
     }
     
     button {
         padding: 8px 16px;
         font-size: 14px;
+    }
+    
+    /* Reduz ou desativa animações complexas em dispositivos móveis */
+    .screen-shake {
+        animation-duration: 0.3s;
+    }
+    
+    /* Otimizações adicionais */
+    #game-container {
+        transform: translateZ(0);
+        will-change: transform;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+    #ui-container {
+        top: 5px;
+        left: 5px;
+        gap: 3px;
+        flex-direction: row;
+        width: calc(100% - 10px);
+        justify-content: space-between;
+    }
+    
+    .ui-element {
+        font-size: 14px;
+        padding: 6px;
+        flex: 1;
+        text-align: center;
+        margin: 0 2px;
+    }
+    
+    #instructions {
+        bottom: 80px; /* Make room for touch controls */
+        left: 5px;
+        max-width: calc(100% - 10px);
+        font-size: 12px;
+        text-align: center;
+    }
+    
+    #game-over, #level-complete {
+        padding: 12px;
+        width: 90%;
+        font-size: 14px;
+    }
+    
+    button {
+        padding: 10px 20px;
+        font-size: 16px;
+        margin-top: 10px;
     }
 }
 
@@ -72,13 +135,17 @@
     bottom: 20px;
     right: 20px;
     display: none; /* Hidden by default, shown only on touch devices */
+    z-index: 15;
+    touch-action: manipulation; /* Melhora responsividade em Safari */
+    transform: translateZ(0); /* Força aceleração de hardware */
+    will-change: transform; /* Indica para o browser que este elemento vai mudar */
 }
 
 .touch-button {
     width: 60px;
     height: 60px;
-    background-color: rgba(100, 100, 100, 0.4);
-    color: #ccc;
+    background-color: rgba(100, 100, 100, 0.5);
+    color: #fff;
     border-radius: 50%;
     display: flex;
     justify-content: center;
@@ -86,11 +153,16 @@
     margin: 5px;
     user-select: none;
     font-size: 24px;
-    border: 1px solid #555;
+    border: 1px solid #777;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    transition: transform 0.1s ease-out, background-color 0.1s ease-out;
+    will-change: transform, background-color;
+    cursor: pointer;
 }
 
 .touch-button:active {
-    background-color: rgba(150, 150, 150, 0.6);
+    background-color: rgba(150, 150, 150, 0.8);
+    transform: scale(0.95);
 }
 
 @media (max-width: 768px) and (pointer: coarse) {
@@ -99,6 +171,8 @@
         grid-template-columns: repeat(3, 1fr);
         grid-template-rows: repeat(3, 1fr);
         gap: 5px;
+        bottom: 15px;
+        right: 15px;
     }
     
     #up-button {
@@ -119,5 +193,54 @@
     #down-button {
         grid-column: 2;
         grid-row: 3;
+    }
+}
+
+@media (max-width: 480px) and (pointer: coarse) {
+    #touch-controls {
+        bottom: 10px;
+        right: 10px;
+        left: 10px;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 5px;
+        justify-content: center;
+    }
+    
+    .touch-button {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+        margin: 2px;
+    }
+}
+
+/* Portrait mode adjustments */
+@media (max-height: 480px) and (orientation: landscape) {
+    #ui-container {
+        flex-direction: row;
+        width: auto;
+        top: 5px;
+        left: 5px;
+        gap: 5px;
+    }
+    
+    #instructions {
+        max-width: 150px;
+        font-size: 12px;
+        bottom: 5px;
+        left: 5px;
+    }
+    
+    #touch-controls {
+        bottom: 5px;
+        right: 5px;
+        gap: 3px;
+    }
+    
+    .touch-button {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+        margin: 2px;
     }
 } 
