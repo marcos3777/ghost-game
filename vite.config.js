@@ -9,12 +9,7 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     emptyOutDir: true,
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true
-      }
-    },
+    minify: 'esbuild',
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
