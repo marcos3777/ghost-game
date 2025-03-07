@@ -132,12 +132,12 @@
 /* Touch Controls for Mobile */
 #touch-controls {
     position: absolute;
-    bottom: 20px;
-    right: 20px;
+    bottom: 50px; /* Movido para cima para garantir visibilidade em telas menores */
+    left: 50%; /* Centralizado horizontalmente */
+    transform: translateX(-50%);
     display: none; /* Hidden by default, shown only on touch devices */
     z-index: 15;
     touch-action: manipulation; /* Melhora responsividade em Safari */
-    transform: translateZ(0); /* Força aceleração de hardware */
     will-change: transform; /* Indica para o browser que este elemento vai mudar */
 }
 
@@ -171,8 +171,13 @@
         grid-template-columns: repeat(3, 1fr);
         grid-template-rows: repeat(3, 1fr);
         gap: 5px;
-        bottom: 15px;
-        right: 15px;
+        bottom: 70px; /* Ainda mais para cima */
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    #instructions {
+        display: none; /* Escondemos as instruções antigas já que usamos a tela inicial */
     }
     
     #up-button {
@@ -198,19 +203,19 @@
 
 @media (max-width: 480px) and (pointer: coarse) {
     #touch-controls {
-        bottom: 10px;
-        right: 10px;
-        left: 10px;
+        bottom: 60px;
+        left: 50%;
+        transform: translateX(-50%);
         grid-template-columns: repeat(3, 1fr);
-        gap: 5px;
-        justify-content: center;
+        gap: 8px;
+        width: 180px; /* Tamanho fixo para garantir que caiba na tela */
     }
     
     .touch-button {
-        width: 50px;
-        height: 50px;
+        width: 48px;
+        height: 48px;
         font-size: 20px;
-        margin: 2px;
+        margin: 0;
     }
 }
 
@@ -232,9 +237,12 @@
     }
     
     #touch-controls {
-        bottom: 5px;
-        right: 5px;
-        gap: 3px;
+        bottom: 15px;
+        right: auto;
+        left: 50%;
+        transform: translateX(-50%);
+        gap: 5px;
+        width: 150px;
     }
     
     .touch-button {

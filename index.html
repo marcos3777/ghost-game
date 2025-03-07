@@ -94,15 +94,111 @@
             border: 1px solid #555;
         }
 
+        #game-title {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            color: #fff;
+            text-align: center;
+            z-index: 10;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        #start-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        #start-screen h1 {
+            font-size: 32px;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+        
+        #start-screen p {
+            font-size: 18px;
+            color: #ccc;
+            max-width: 500px;
+            margin: 10px 0;
+        }
+        
+        #start-button {
+            background-color: #555;
+            color: #fff;
+            border: none;
+            padding: 15px 30px;
+            margin-top: 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 20px;
+            transition: background-color 0.2s;
+        }
+        
+        #start-button:hover {
+            background-color: #777;
+        }
+
         /* Prevenção de highlight ao tocar em elementos */
         * {
             -webkit-tap-highlight-color: transparent;
+        }
+        
+        @media (max-width: 768px) {
+            #game-title {
+                font-size: 20px;
+            }
+            
+            #start-screen h1 {
+                font-size: 28px;
+            }
+            
+            #start-screen p {
+                font-size: 16px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            #game-title {
+                font-size: 16px;
+                top: 5px;
+            }
+            
+            #start-screen h1 {
+                font-size: 24px;
+            }
+            
+            #start-screen p {
+                font-size: 14px;
+            }
         }
     </style>
 </head>
 <body>
     <div id="game-container">
         <div id="loading">Loading...</div>
+        
+        <div id="game-title">2D Ghost Maze Game</div>
+        
+        <div id="start-screen">
+            <h1>2D Ghost Maze Game</h1>
+            <p>Você é um fantasma perdido em um labirinto sombrio.</p>
+            <p>Use as setas de movimento para encontrar a mulher antes que o tempo acabe!</p>
+            <p>O labirinto fica mais difícil a cada nível.</p>
+            <button id="start-button">Começar Jogo</button>
+        </div>
         
         <div id="ui-container">
             <div id="timer" class="ui-element">Time: 60</div>

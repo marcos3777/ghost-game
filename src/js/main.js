@@ -21,21 +21,6 @@ class Game {
         // Update page title to reflect 2D version
         document.title = "2D Ghost Maze Game";
         
-        // Add a game title to the UI
-        const titleElement = document.createElement('div');
-        titleElement.id = 'game-title';
-        titleElement.innerText = '2D Ghost Maze';
-        titleElement.style.position = 'absolute';
-        titleElement.style.top = '10px';
-        titleElement.style.left = '50%';
-        titleElement.style.transform = 'translateX(-50%)';
-        titleElement.style.fontSize = '24px';
-        titleElement.style.fontWeight = 'bold';
-        titleElement.style.color = '#cccccc'; // Light gray for better contrast on black
-        titleElement.style.zIndex = '100';
-        titleElement.style.textShadow = '2px 2px 4px rgba(0,0,0,0.8)'; // Add shadow for better visibility
-        document.getElementById('game-container').appendChild(titleElement);
-        
         // Game state
         this.isRunning = false;
         this.level = 1;
@@ -43,6 +28,7 @@ class Game {
         this.timeRemaining = 60; // seconds
         this.baseTime = 60;
         this.timePenaltyPerLevel = 5; // Reduce time by this amount each level
+        this.gameStarted = false;  // Flag para controlar se o jogo começou
         
         // Initialize modules
         this.renderer = new GameRenderer();
@@ -83,10 +69,12 @@ class Game {
         this.levelComplete = this.levelComplete.bind(this);
         this.restartGame = this.restartGame.bind(this);
         this.continueToNextLevel = this.continueToNextLevel.bind(this);
+        this.hideStartScreen = this.hideStartScreen.bind(this);
         
         // Remove existing listeners if any
         const restartButton = document.getElementById('restart-button');
         const continueButton = document.getElementById('continue-button');
+        const startButton = document.getElementById('start-button');
         
         if (restartButton) {
             restartButton.removeEventListener('click', this.restartGame);
@@ -109,16 +97,70 @@ class Game {
             });
         }
         
+        if (startButton) {
+            startButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.hideStartScreen();
+            });
+        }
+        
         // Hide loading screen when everything is ready
         window.addEventListener('load', () => {
             document.getElementById('loading').style.display = 'none';
-            this.startGame();
+            // Não iniciamos o jogo automaticamente, esperamos o usuário clicar em Start
+            this.initializeGame();
         });
         
         // Handle window resize
         window.addEventListener('resize', () => {
             this.renderer.handleResize();
         });
+    }
+    
+    /**
+     * Inicializa o jogo sem começar a jogabilidade
+     */
+    initializeGame() {
+        // Gera o primeiro labirinto mas mantém a tela inicial visível
+        try {
+            this.generateLevel();
+            
+            // Garantimos que o jogo não esteja rodando até que o usuário pressione Start
+            this.isRunning = false;
+            
+            // Mas já configuramos a cena para visualização
+            this.renderer.startRendering(this.update);
+        } catch (error) {
+            console.error("Failed to initialize game:", error);
+        }
+    }
+    
+    /**
+     * Esconde a tela inicial e começa o jogo
+     */
+    hideStartScreen() {
+        const startScreen = document.getElementById('start-screen');
+        if (startScreen) {
+            startScreen.style.display = 'none';
+        }
+        
+        // Escondemos as instruções pois já foram mostradas na tela inicial
+        const instructions = document.getElementById('instructions');
+        if (instructions) {
+            instructions.style.display = 'none';
+        }
+        
+        // Garantimos que o controle de toque esteja visível em dispositivos mobile
+        if (this.inputHandler.isTouchDevice) {
+            const touchControls = document.getElementById('touch-controls');
+            if (touchControls) {
+                touchControls.style.display = 'grid';
+            }
+        }
+        
+        this.gameStarted = true;
+        this.startGame();
     }
     
     startGame() {
